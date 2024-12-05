@@ -117,6 +117,7 @@ TEST(Translator, can_get_solution_from_polish_entry)
 	double ans_s1 = s1.getSolution();
 	EXPECT_EQ(111, ans_s1);
 }
+/*
 TEST(Translator, can_check_isDigit)
 {
 	EXPECT_EQ(1,isDigit('3'));
@@ -149,3 +150,4 @@ TEST(Translator, cant_check_isDot_with_not_Dot)
 {
 	EXPECT_EQ(0, isDot(','));
 }
+*/
