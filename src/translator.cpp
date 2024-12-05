@@ -1,5 +1,29 @@
 #include "translator.h"
 
+int isDigit(char c)
+{
+	if (c >= 48 && c <= 57) return 1;
+	else return 0;
+}
+
+int isPlusorMinus(char c)
+{
+	if (c == 43 || c == 45) return 1;
+	else return 0;
+}
+
+int isOperation(char c)
+{
+	if (c == '+' || c == '-' || c == '*' || c == '/') return 1;
+	else return 0;
+}
+
+int isDot(char c)
+{
+	if (c == 46) return 1;
+	else return 0;
+}
+
 void arithmetic_expression::expression_to_terms()
 {
 	int number_status = 0, gotDot = 0;
@@ -91,7 +115,7 @@ int arithmetic_expression::syntax_analysis()
 		switch (state)
 		{
 		case 0:
-			if (terms[i]->getType() == types::open_bracket_ || terms[i]->getType() == types::operand_()) {
+			if (terms[i]->getType() == types::open_bracket_ || terms[i]->getType() == types::operand_) {
 				throw std::logic_error("Wrong input"); return 1;
 			}
 			else if (terms[i]->getType() == types::close_bracket_) state = 3; else state = 1;
@@ -199,26 +223,3 @@ void arithmetic_expression::polish_entry_to_solution()
 	arithmetic_expression::solution = ((operand*)(st.top()))->getValue();
 }
 
-int isDigit(char c)
-{
-	if (c >= 48 && c <= 57) return 1;
-	else return 0;
-}
-
-int isPlusorMinus(char c)
-{
-	if (c == 43 || c == 45) return 1;
-	else return 0;
-}
-
-int isOperation(char c)
-{
-	if (c == '+' || c == '-' || c == '*' || c == '/') return 1;
-	else return 0;
-}
-
-int isDot(char c)
-{
-	if (c == 46) return 1;
-	else return 0;
-}
