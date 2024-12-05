@@ -14,7 +14,7 @@ int isPlusorMinus(char c)
 
 int isOperation(char c)
 {
-	if (c == '+' || c == '-' || c == '*' || c == '/') return 1;
+	if (c == '*' || c == '/') return 1;
 	else return 0;
 }
 
@@ -39,6 +39,12 @@ void arithmetic_expression::expression_to_terms()
 				number += expression[i];
 				if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
 			}
+			if (isPlusorMinus(expression[i]))
+			{
+				number_status = 1;
+				number += expression[i];
+				if (i == expression.size() - 1) { number_status = 0; terms.push_back(new operand(stod(number))); number.clear(); }
+			}
 			if (isOperation(expression[i]))
 			{
 				terms.push_back(new operation(expression[i]));
@@ -62,6 +68,14 @@ void arithmetic_expression::expression_to_terms()
 					number += expression[i];
 					if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
 				}
+			}
+			if (isPlusorMinus(expression[i]))
+			{
+				number_status = 0;
+				gotDot = 0;
+				terms.push_back(new operand(stod(number)));
+				terms.push_back(new operation(expression[i]));
+				number.clear();
 			}
 			if (isOperation(expression[i]))
 			{

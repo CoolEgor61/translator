@@ -6,6 +6,16 @@ TEST(Translator, can_create_arithmetic_expression)
 	std::string s = "21+(3+5*7-16/2)*3";
 	ASSERT_NO_THROW(arithmetic_expression s1(s));
 }
+TEST(Translator, can_unarniy_minus)
+{
+	std::string s = "-7+5";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	EXPECT_EQ(-2, a);
+}
 TEST(Translator, can_create_vector_of_terms)
 {
 	std::string s = "21+(3*5)/3";
