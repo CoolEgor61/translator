@@ -1,12 +1,11 @@
 #include <iostream>
 #include "term.h"
 #include "translator.h"
-#include "state_machine.h"
 #include <vector>
 
 int main()
 {
-	std::string s = "20+(3+5*7-16/2)*3";
+	std::string s = "21+(3+5*7-16/2)*3";
 	arithmetic_expression s1(s);
 	s1.expression_to_terms();
 	s1.print_terms();

@@ -2,25 +2,26 @@
 
 void arithmetic_expression::expression_to_terms()
 {
-	int number_status = 0;
+	int number_status = 0, gotDot = 0;
 	std::string number;
 	for (std::size_t i = 0; i < expression.size(); i++)
 	{
 		if (number_status == 0)
 		{
-			if (expression[i] == '(')
+			if (isDigit(expression[i]) || expression[i] == '.')
 			{
-				terms.push_back(new open_bracket);
+				number_status = 1;
+				if (expression[i] == '.') gotDot = 1;
+				number += expression[i];
+				if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
 			}
 			if (isOperation(expression[i]))
 			{
 				terms.push_back(new operation(expression[i]));
 			}
-			if (isDigit(expression[i]) || expression[i] == '.')
+			if (expression[i] == '(')
 			{
-				number_status = 1;
-				number += expression[i];
-				if (i == expression.size() - 1) { terms.push_back(new operand(stod(number))); number.clear(); }
+				terms.push_back(new open_bracket);
 			}
 			if (expression[i] == ')')
 			{
@@ -31,12 +32,25 @@ void arithmetic_expression::expression_to_terms()
 		{
 			if (isDigit(expression[i]) || expression[i] == '.')
 			{
-				number += expression[i];
-				if (i == expression.size() - 1) { terms.push_back(new operand(stod(number))); number.clear(); }
+				if (expression[i] == '.' && gotDot==1) throw std::logic_error("Wrong input");
+				else {
+					if (expression[i] == '.') gotDot = 1;
+					number += expression[i];
+					if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
+				}
+			}
+			if (isOperation(expression[i]))
+			{
+				number_status = 0;
+				gotDot = 0;
+				terms.push_back(new operand(stod(number)));
+				terms.push_back(new operation(expression[i]));
+				number.clear();
 			}
 			if (expression[i] == '(')
 			{
 				number_status = 0;
+				gotDot = 0;
 				terms.push_back(new operand(stod(number)));
 				terms.push_back(new open_bracket);
 				number.clear();
@@ -44,19 +58,14 @@ void arithmetic_expression::expression_to_terms()
 			if (expression[i] == ')')
 			{
 				number_status = 0;
+				gotDot = 0;
 				terms.push_back(new operand(stod(number)));
 				terms.push_back(new close_bracket);
 				number.clear();
 			}
-			if (isOperation(expression[i]))
-			{
-				number_status = 0;
-				terms.push_back(new operand(stod(number)));
-				terms.push_back(new operation(expression[i]));
-				number.clear();
-			}
 		}
 	}
+	this->syntax_analysis();
 }
 
 void arithmetic_expression::print_terms()
@@ -82,10 +91,10 @@ int arithmetic_expression::syntax_analysis()
 		switch (state)
 		{
 		case 0:
-			if (terms[i]->getType() == types::close_bracket_ || terms[i]->getType() == types::open_bracket_ || terms[i]->getType() == types::operand_()) {
+			if (terms[i]->getType() == types::open_bracket_ || terms[i]->getType() == types::operand_()) {
 				throw std::logic_error("Wrong input"); return 1;
 			}
-			else state = 1;
+			else if (terms[i]->getType() == types::close_bracket_) state = 3; else state = 1;
 			break;
 		case 1:
 			if (terms[i]->getType() == types::close_bracket_ || terms[i]->getType() == types::operation_) {
@@ -210,6 +219,6 @@ int isOperation(char c)
 
 int isDot(char c)
 {
-	if (c == 44 || c == 46) return 1;
+	if (c == 46) return 1;
 	else return 0;
 }

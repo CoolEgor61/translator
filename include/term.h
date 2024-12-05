@@ -45,6 +45,7 @@ private:
 	char bracket;
 public:
 	open_bracket() : bracket('('), term(types::open_bracket_) {};
+	char getBracket() { return bracket; };
 };
 
 class close_bracket : public term
@@ -53,6 +54,7 @@ private:
 	char bracket;
 public:
 	close_bracket() : bracket(')'), term(types::close_bracket_) {};
+	char getBracket() { return bracket; };
 };
 
 #endif
