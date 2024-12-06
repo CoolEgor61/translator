@@ -1,4 +1,5 @@
 #include "translator.h"
+#include <math.h>
 
 int isDigit(char c)
 {
@@ -14,7 +15,7 @@ int isPlusorMinus(char c)
 
 int isOperation(char c)
 {
-	if (c == '*' || c == '/') return 1;
+	if (c == '+' || c == '-' || c == '*' || c == '/') return 1;
 	else return 0;
 }
 
@@ -28,6 +29,7 @@ void arithmetic_expression::expression_to_terms()
 {
 	int number_status = 0, gotDot = 0;
 	std::string number;
+	std::string function;
 	for (std::size_t i = 0; i < expression.size(); i++)
 	{
 		if (number_status == 0)
@@ -38,24 +40,46 @@ void arithmetic_expression::expression_to_terms()
 				if (expression[i] == '.') gotDot = 1;
 				number += expression[i];
 				if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
-			}
-			if (isPlusorMinus(expression[i]))
+			} else if (isOperation(expression[i]))
 			{
-				number_status = 1;
-				number += expression[i];
-				if (i == expression.size() - 1) { number_status = 0; terms.push_back(new operand(stod(number))); number.clear(); }
-			}
-			if (isOperation(expression[i]))
-			{
-				terms.push_back(new operation(expression[i]));
-			}
-			if (expression[i] == '(')
+				if (isPlusorMinus(expression[i]) && terms.back()->getType() == open_bracket_)
+				{
+					number_status = 1;
+					number += expression[i];
+				} else terms.push_back(new operation(expression[i]));
+			} else if (expression[i] == '(')
 			{
 				terms.push_back(new open_bracket);
-			}
-			if (expression[i] == ')')
+			} else if (expression[i] == ')')
 			{
 				terms.push_back(new close_bracket);
+			}
+			else
+			{
+				while (expression[i] != ')')
+				{
+					function += expression[i];
+					i++;
+				}
+				std::string func;
+				std::size_t tmp = function.find_first_of('(');
+				std::string arg = function.substr(tmp+1);
+				for (std::size_t k = 0; k < tmp; k++) func.push_back(function[k]);
+				if (func == "sin")
+				{
+					double argument = stod(arg);
+					terms.push_back(new operand(sin(argument)));
+				}
+				else if (func == "cos")
+					{
+						double argument = stod(arg);
+						terms.push_back(new operand(cos(argument)));
+					} 
+				else if (func == "tan")
+				{
+					double argument = stod(arg);
+					terms.push_back(new operand(tan(argument)));
+				}
 			}
 		}
 		else
@@ -68,32 +92,21 @@ void arithmetic_expression::expression_to_terms()
 					number += expression[i];
 					if (i == expression.size() - 1) { number_status = 0; gotDot = 0; terms.push_back(new operand(stod(number))); number.clear(); }
 				}
-			}
-			if (isPlusorMinus(expression[i]))
+			} else if (isOperation(expression[i]))
 			{
 				number_status = 0;
 				gotDot = 0;
 				terms.push_back(new operand(stod(number)));
 				terms.push_back(new operation(expression[i]));
 				number.clear();
-			}
-			if (isOperation(expression[i]))
-			{
-				number_status = 0;
-				gotDot = 0;
-				terms.push_back(new operand(stod(number)));
-				terms.push_back(new operation(expression[i]));
-				number.clear();
-			}
-			if (expression[i] == '(')
+			} else if (expression[i] == '(')
 			{
 				number_status = 0;
 				gotDot = 0;
 				terms.push_back(new operand(stod(number)));
 				terms.push_back(new open_bracket);
 				number.clear();
-			}
-			if (expression[i] == ')')
+			} else if (expression[i] == ')')
 			{
 				number_status = 0;
 				gotDot = 0;
@@ -169,7 +182,7 @@ void arithmetic_expression::terms_to_polish_entry()
 		{
 			if (st.empty()) st.push(terms[i]);
 			else {
-				while (((operation*)(terms[i]))->getPriority() <= ((operation*)(st.top()))->getPriority())
+				while (!st.empty() && ((operation*)(terms[i]))->getPriority() <= ((operation*)(st.top()))->getPriority())
 				{
 					arithmetic_expression::polish_entry.push_back(st.top());
 					st.pop();
@@ -227,7 +240,9 @@ void arithmetic_expression::polish_entry_to_solution()
 				break;
 			case '*': st.push(new operand(t2 * t1));
 				break;
-			case '/': st.push(new operand(t2 / t1));
+			case '/': 
+				if (t1 == 0) throw std::logic_error("division by zero");
+				else st.push(new operand(t2 / t1));
 				break;
 			default:
 				break;

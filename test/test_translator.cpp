@@ -8,13 +8,46 @@ TEST(Translator, can_create_arithmetic_expression)
 }
 TEST(Translator, can_unarniy_minus)
 {
-	std::string s = "-7+5";
+	std::string s = "(-7)+5";
 	arithmetic_expression s1(s);
 	s1.expression_to_terms();
 	s1.terms_to_polish_entry();
 	s1.polish_entry_to_solution();
 	double a = s1.getSolution();
 	EXPECT_EQ(-2, a);
+}
+TEST(Translator, can_count_sin)
+{
+	std::string s = "1+2*(3-sin(0))-4";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(3, a);
+}
+TEST(Translator, can_count_cos)
+{
+	std::string s = "1+2*(3-cos(0))-4";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(1, a);
+}
+TEST(Translator, can_count_tan)
+{
+	std::string s = "1+2*(3-tan(0))-4";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(3, a);
 }
 TEST(Translator, can_create_vector_of_terms)
 {

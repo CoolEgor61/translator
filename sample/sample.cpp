@@ -5,8 +5,10 @@
 
 int main()
 {
-	//std::string s = "21+(3+5*7-16/2)*3";
-	std::string s = "-7+5";
+	//std::string s = "21+(3+5*(+7)-16/2)*3";
+	//std::string s = "(-.1)";
+	std::string s = "1+2*(3-sin(0))-4";
+	//std::string s = "sin(3.14)";
 	arithmetic_expression s1(s);
 	s1.expression_to_terms();
 	s1.print_terms();
