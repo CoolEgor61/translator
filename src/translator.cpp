@@ -80,6 +80,7 @@ void arithmetic_expression::expression_to_terms()
 					double argument = stod(arg);
 					terms.push_back(new operand(tan(argument)));
 				}
+				func.clear(); arg.clear();
 			}
 		}
 		else
