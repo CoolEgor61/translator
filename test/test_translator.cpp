@@ -27,6 +27,17 @@ TEST(Translator, can_count_sin)
 	std::cout << a;
 	EXPECT_EQ(3, a);
 }
+TEST(Translator, can_count_sin_from_arithmetic_expression)
+{
+	std::string s = "2*(3-sin(2-2))";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(6, a);
+}
 TEST(Translator, can_count_cos)
 {
 	std::string s = "1+2*(3-cos(0))-4";
@@ -38,6 +49,17 @@ TEST(Translator, can_count_cos)
 	std::cout << a;
 	EXPECT_EQ(1, a);
 }
+TEST(Translator, can_count_cos_from_arithmetic_expression)
+{
+	std::string s = "2*(3-cos(2-2))";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(4, a);
+}
 TEST(Translator, can_count_tan)
 {
 	std::string s = "1+2*(3-tan(0))-4";
@@ -48,6 +70,17 @@ TEST(Translator, can_count_tan)
 	double a = s1.getSolution();
 	std::cout << a;
 	EXPECT_EQ(3, a);
+}
+TEST(Translator, can_count_tan_from_arithmetic_expression)
+{
+	std::string s = "2*(3-tan(2-2))";
+	arithmetic_expression s1(s);
+	s1.expression_to_terms();
+	s1.terms_to_polish_entry();
+	s1.polish_entry_to_solution();
+	double a = s1.getSolution();
+	std::cout << a;
+	EXPECT_EQ(6, a);
 }
 TEST(Translator, can_create_vector_of_terms)
 {

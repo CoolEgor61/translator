@@ -16,11 +16,13 @@ private:
 	double solution;
 public:
 	arithmetic_expression(std::string s) : expression(s) {};
+	~arithmetic_expression();
 
 	friend int isDigit(char c);
 	friend int isPlusorMinus(char c);
 	friend int isOperation(char c);
 	friend int isDot(char c);
+	friend int isLetter(char c);
 
 	void expression_to_terms();
 	void print_terms();
