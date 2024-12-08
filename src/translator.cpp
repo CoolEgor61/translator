@@ -5,17 +5,17 @@ arithmetic_expression::~arithmetic_expression()
 {
 	if (!terms.size())
 	{
-		for (std::size_t i = 0; i < terms.size(); i++) delete[] terms[i];
+		for (std::size_t i = 0; i < terms.size(); i++) delete terms[i];
 	}
 	if (!polish_entry.size())
 	{
-		for (std::size_t i = 0; i < polish_entry.size(); i++) delete[] polish_entry[i];
+		for (std::size_t i = 0; i < polish_entry.size(); i++) delete polish_entry[i];
 	}
 }
 
 int isDigit(char c)
 {
-	if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9') return 1;
+	if (c >= '0' && c <= '9') return 1;
 	else return 0;
 }
 
@@ -76,31 +76,6 @@ void arithmetic_expression::expression_to_terms()
 			{
 				status = 2;
 				function.push_back(expression[i]);
-				/*while (expression[i] != ')')
-				{
-					function += expression[i];
-					i++;
-				}
-				std::string func;
-				std::size_t tmp = function.find_first_of('(');
-				std::string arg = function.substr(tmp+1);
-				for (std::size_t k = 0; k < tmp; k++) func.push_back(function[k]);
-				if (func == "sin")
-				{
-					double argument = stod(arg);
-					terms.push_back(new operand(sin(argument)));
-				}
-				else if (func == "cos")
-					{
-						double argument = stod(arg);
-						terms.push_back(new operand(cos(argument)));
-					} 
-				else if (func == "tan")
-				{
-					double argument = stod(arg);
-					terms.push_back(new operand(tan(argument)));
-				}
-				func.clear(); arg.clear();*/
 			}
 		}
 		else if (status==1)
@@ -140,7 +115,7 @@ void arithmetic_expression::expression_to_terms()
 			}
 			else if (isLetter(expression[i]))
 			{
-				function.push_back(expression[i]);
+				throw std::logic_error("Wrong input");
 			}
 		}
 		else if (status == 2)
@@ -297,8 +272,10 @@ void arithmetic_expression::polish_entry_to_solution()
 		else if (current_type == types::operation_)
 		{
 			double t1 = ((operand*)(st.top()))->getValue();
+			delete st.top();
 			st.pop();
 			double t2 = ((operand*)(st.top()))->getValue();
+			delete st.top();
 			st.pop();
 			switch (((operation*)(arithmetic_expression::polish_entry[i]))->getOperation())
 			{
@@ -318,6 +295,7 @@ void arithmetic_expression::polish_entry_to_solution()
 		}
 	}
 	arithmetic_expression::solution = ((operand*)(st.top()))->getValue();
-	delete[] st.top();
+	delete st.top();
+	st.pop();
 }
 
