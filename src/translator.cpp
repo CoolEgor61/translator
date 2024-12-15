@@ -146,12 +146,17 @@ void arithmetic_expression::expression_to_terms()
 					function.clear(); ar_expr.clear();
 				}
 			}
-			else if (isDigit(expression[i]))
+			else if (isDigit(expression[i]) || expression[i] == '.')
 			{
-				ar_expr.push_back(expression[i]);
+				if (expression[i] == '.' && gotDot == 1) throw std::logic_error("Wrong input");
+				else {
+					if (expression[i] == '.') gotDot = 1;
+					ar_expr.push_back(expression[i]);
+				}
 			}
 			else if (isOperation(expression[i]))
 			{
+				gotDot = 0;
 				if (ar_expr.back()==types::operation_) throw std::logic_error("Wrong input"); else ar_expr.push_back(expression[i]);
 			}
 		}
