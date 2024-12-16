@@ -3,7 +3,7 @@
 
 #include "term.h"
 #include <string>
-#include "mstack.h"
+#include "mStack.h"
 #include <vector>
 #include <exception>
 #include <iostream>
