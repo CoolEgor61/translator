@@ -47,7 +47,7 @@ void arithmetic_expression::expression_to_terms()
 {
 	int status = 0, gotDot = 0;
 	std::string number, function, ar_expr;
-	std::stack<char> t;
+	mStack<char> t;
 	for (std::size_t i = 0; i < expression.size(); i++)
 	{
 		if (status == 0)
@@ -178,7 +178,7 @@ void arithmetic_expression::print_terms()
 int arithmetic_expression::syntax_analysis()
 {
 	std::size_t state;
-	std::stack<char> t;
+	mStack<char> t;
 	if (terms[0]->getType() == types::operand_) state = 0;
 	if (terms[0]->getType() == types::operation_) throw std::logic_error("Wrong input");
 	if (terms[0]->getType() == types::open_bracket_) { state = 2; t.push('('); }
@@ -222,7 +222,7 @@ int arithmetic_expression::syntax_analysis()
 
 void arithmetic_expression::terms_to_polish_entry()
 {
-	std::stack<term*> st;
+	mStack<term*> st;
 	for (std::size_t i = 0; i < arithmetic_expression::terms.size(); i++)
 	{
 		if (terms[i]->getType() == types::operand_) arithmetic_expression::polish_entry.push_back(new operand(((operand*)(terms[i]))->getValue()));
@@ -269,7 +269,7 @@ void arithmetic_expression::print_polish_entry()
 
 void arithmetic_expression::polish_entry_to_solution()
 {
-	std::stack<term*> st;
+	mStack<term*> st;
 	for (std::size_t i = 0; i < arithmetic_expression::polish_entry.size(); i++)
 	{
 		types current_type = arithmetic_expression::polish_entry[i]->getType();
